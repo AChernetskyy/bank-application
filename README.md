@@ -1,5 +1,5 @@
 # bank-application
-1. As a user, I should be to able create an account
+1. As a user, I should be able to create an account
 2. As a user, I should be able to see all account list
 3. As a user, I should be able to provide 2 types account choice
 4. As a user, I able to make transactions of accounts
