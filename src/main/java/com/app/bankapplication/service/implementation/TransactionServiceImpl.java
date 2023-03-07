@@ -2,6 +2,9 @@ package com.app.bankapplication.service.implementation;
 
 import com.app.bankapplication.entity.Account;
 import com.app.bankapplication.entity.Transaction;
+import com.app.bankapplication.enums.AccountType;
+import com.app.bankapplication.exception.AccountOwnerShipException;
+import com.app.bankapplication.exception.BadRequestException;
 import com.app.bankapplication.repository.TransactionRepository;
 import com.app.bankapplication.service.TransactionService;
 import org.springframework.stereotype.Component;
@@ -23,11 +26,24 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     public Transaction makeTransfer(BigDecimal amount, Date creationDate, Account sender, Account receiver, String message) {
         checkAccountOwnership(sender, receiver);
+        validateAccounts(sender, receiver);
 
         return null;
     }
 
+    private void validateAccounts(Account sender, Account receiver) {
+        if(sender == null || receiver == null){
+            throw new BadRequestException("Sender or receiver can not be null");
+        }
+        if(sender.getId().equals(receiver.getId())){
+            throw new BadRequestException("Can not make transfer to the same account");
+
+        }    }
+
     private void checkAccountOwnership(Account sender, Account receiver) {
+        if ((sender.getAccountType().equals(AccountType.SAVINGS) || receiver.getAccountType().equals(AccountType.SAVINGS)) && !sender.getId().equals(receiver.getId())) {
+            throw new AccountOwnerShipException("When one of the account type is Saving, sender and receiver has to be the same person");
+        }
     }
 
     @Override
